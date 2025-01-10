@@ -1,0 +1,16 @@
+name: Manual Action Example
+
+# Trigger workflow manually
+on:
+  workflow_dispatch:
+    inputs:
+      zip-url:
+        description: "Enter ZIP URL"
+        required: true
+        default: "default value"
+
+jobs:
+  call-workflow-passing-data:
+    uses: datafund/auto-code-update/.github/workflows/sync.yml@main
+    with:
+      input-zip: ${{ inputs.zip-url }}
