@@ -19,14 +19,18 @@ def get_txt_files_recursively(folder_path):
             if is_text_file(file_path):
                 yield file_path
 
-
 def merge_file(original_file, modified_file, output_file):
     """
     Merges `modified_file` into `original_file` by applying only new and changed lines, ignoring deletions.
     The result is saved to `output_file`.
     """
-    with open(original_file, 'r') as orig:
-        original_lines = orig.readlines()
+    original_lines = ""
+    try:
+      with open(original_file, 'r') as orig:
+          original_lines = orig.readlines()
+    except FileNotFoundError:
+        pass
+    
     with open(modified_file, 'r') as updated:
         updated_lines = updated.readlines()
     
@@ -44,6 +48,9 @@ def merge_file(original_file, modified_file, output_file):
         elif tag == 'delete':
             # Include deleted lines from original file
             merged_lines.extend(original_lines[i1:i2])
+
+    # Ensure the directory exists, create if necessary
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
     
     # Write the merged content to the output file
     with open(output_file, 'w') as output:
