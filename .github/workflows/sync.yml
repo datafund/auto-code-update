@@ -59,7 +59,7 @@ jobs:
           BRANCH_NAME="update-$(date +%Y%m%d%H%M%S)"
           git checkout -b $BRANCH_NAME
           git push origin $BRANCH_NAME
-          echo "branch=$(BRANCH_NAME)\n" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
 
       # Step 8: Create a pull request
       - name: Create Pull Request
