@@ -39,7 +39,12 @@ jobs:
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
 
-      # Step 5: Commit changes
+      # Step 6: Cleaning unused files
+      - name: Clean
+        run: |
+          rm -r extracted/ && rm downloaded.zip
+
+      # Step 6: Commit changes
       - name: Commit changes
         run: |
           git config user.name "${{ github.actor }}"
@@ -47,14 +52,16 @@ jobs:
           git add .
           git commit -m "Automated update by GitHub Action" || echo "No changes to commit"
 
-      # Step 6: Push changes to a new branch
+      # Step 7: Push changes to a new branch
       - name: Push changes
+        id: push-changes
         run: |
           BRANCH_NAME="update-$(date +%Y%m%d%H%M%S)"
           git checkout -b $BRANCH_NAME
           git push origin $BRANCH_NAME
+          echo "branch=$(BRANCH_NAME)\n" >> $GITHUB_OUTPUT
 
-      # Step 7: Create a pull request
+      # Step 8: Create a pull request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
