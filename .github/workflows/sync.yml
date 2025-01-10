@@ -1,0 +1,64 @@
+name: Update Repository and Create Pull Request
+
+on:
+  workflow_call:
+    inputs:
+      input-zip:
+        required: true
+        type: string
+      # repo:
+      #   required: true
+      #   type: string
+
+jobs:
+  update-repo:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        # with:
+        #   repository: $${{ env.GITHUB_REPO }}
+        #   token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 2: Download the zip file from the predefined URL
+      - name: Download zip file
+        run: |
+          curl -L -o downloaded.zip "${{ inputs.input-zip }}"
+
+      # Step 3: Extract the zip file
+      - name: Extract zip file
+        run: |
+          unzip downloaded.zip -d extracted/
+
+      # Step 4: Run Python script to modify the repository
+      - name: Run Python script
+        run: |
+          python3 src/merge.py extracted/ .
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+
+      # Step 5: Commit changes
+      - name: Commit changes
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add .
+          git commit -m "Automated update by GitHub Action" || echo "No changes to commit"
+
+      # Step 6: Push changes to a new branch
+      - name: Push changes
+        run: |
+          BRANCH_NAME="update-$(date +%Y%m%d%H%M%S)"
+          git checkout -b $BRANCH_NAME
+          git push origin $BRANCH_NAME
+
+      # Step 7: Create a pull request
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: ${{ steps.push-changes.outputs.branch }}
+          title: "Automated Update"
+          body: |
+            This pull request was created automatically by the GitHub Action workflow.
