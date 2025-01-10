@@ -63,10 +63,9 @@ jobs:
 
       # Step 8: Create a pull request
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+        uses: devops-infra/action-pull-request@v0.5.5
         with:
-          branch: ${{ steps.push-changes.outputs.branch }}
-          base: main
+          target_branch: main
           title: "Automated Update"
           body: |
             This pull request was created automatically by the GitHub Action workflow.
