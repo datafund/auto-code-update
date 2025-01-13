@@ -6,9 +6,10 @@ on:
       input-zip:
         required: true
         type: string
-      # repo:
-      #   required: true
-      #   type: string
+      relative-path:
+        required: true
+        type: string
+        default: "."
 
 jobs:
   update-repo:
@@ -35,7 +36,7 @@ jobs:
       # Step 4: Run Python script to modify the repository
       - name: Run Python script
         run: |
-          python3 src/merge.py extracted/ .
+          python3 src/merge.py extracted/ "${{ inputs.relative-path }}"
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
 
