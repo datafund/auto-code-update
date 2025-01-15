@@ -25,7 +25,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: datafund/auto-code-update
-          token: ${{ secrets.GITHUB_TOKEN }}
           path: auto-code-update
           ref: main
 
