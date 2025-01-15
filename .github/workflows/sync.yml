@@ -24,9 +24,10 @@ jobs:
       - name: Checkout reusable workflow dir
         uses: actions/checkout@v3
         with:
-          repository: datafund/auto-code-update@main
+          repository: datafund/auto-code-update
           token: ${{ secrets.GITHUB_TOKEN }}
           path: auto-code-update
+          ref: main
 
       # Step 2: Download the zip file from the predefined URL
       - name: Download zip file
